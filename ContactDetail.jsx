@@ -59,6 +59,8 @@ export class IndividualDetailSection extends Component {
   }
 
   render() {
+    console.log('this.props.componentId');
+
     return this.state.showEditSection
       ? this.renderEdit()
       : this.renderDisplay();
@@ -128,7 +130,7 @@ export class IndividualDetailSection extends Component {
     let lastName = this.props.details ? `${this.props.details.lastName}` : '';
     let email = this.props.details ? this.props.details.email : '';
     let phone = this.props.details ? this.props.details.phone : '';
-
+    console.log('changes are getting reflected');
     return (
       <div className="row">
         <div className="ui sixteen wide column">
@@ -176,6 +178,7 @@ export class CompanyDetailSection extends Component {
   }
 
   openEdit() {
+    console.log('Open Edit');
     const details = Object.assign({}, this.props.details);
     this.setState({
       showEditSection: true,
@@ -284,7 +287,11 @@ export class CompanyDetailSection extends Component {
               Location: {location.city}, {location.country}
             </p>
           </React.Fragment>
-          <button type="button" className="ui right floated teal button">
+          <button
+            type="button"
+            className="ui right floated teal button"
+            onClick={this.openEdit}
+          >
             Edit
           </button>
         </div>

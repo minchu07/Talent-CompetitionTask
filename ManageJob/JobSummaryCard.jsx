@@ -36,7 +36,7 @@ export class JobSummaryCard extends React.Component {
       //   </div>
       // </div>
 
-      <Card>
+      <Card style={{ height: '300px', width: '400px' }}>
         <Card.Content>
           <Card.Header>{this.props.header}</Card.Header>
           <Label ribbon="right" color="black">

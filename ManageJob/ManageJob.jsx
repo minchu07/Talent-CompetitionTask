@@ -18,6 +18,7 @@ import {
   Card,
   Grid,
   Container,
+  Label,
 } from 'semantic-ui-react';
 import { JobsDisplay } from './JobsDisplay.jsx';
 
@@ -42,6 +43,36 @@ export default class ManageJob extends React.Component {
         showExpired: true,
         showUnexpired: true,
       },
+      filterOptions: [
+        {
+          key: 'Choose filter',
+          text: 'Choose filter',
+          value: 'Choose filter',
+        },
+        {
+          key: 'showActive',
+          text: 'showActive',
+          value: 'showActive',
+        },
+        {
+          key: 'showClosed',
+          text: 'showClosed',
+          value: 'showClosed',
+        },
+        { key: 'showExpired', text: 'showExpired', value: 'showExpired' },
+      ],
+      sortOptions: [
+        {
+          key: 'Newest first',
+          text: 'Newest first',
+          value: 'Newest first',
+        },
+        {
+          key: 'Oldest first',
+          text: 'Oldest first',
+          value: 'Oldest first',
+        },
+      ],
       totalPages: 1,
       activeIndex: '',
       page: 1,
@@ -83,7 +114,9 @@ export default class ManageJob extends React.Component {
   loadData() {
     var cookies = Cookies.get('talentAuthToken');
     $.ajax({
-      url: 'http://localhost:51689/listing/listing/GetEmployerJobs',
+      // url: 'http://localhost:51689/listing/listing/GetEmployerJobs',
+      url:
+        'https://talentservicetalent.azurewebsites.net/listing/listing/GetEmployerJobs',
       headers: {
         'Authorization': 'Bearer ' + cookies,
         'Content-Type': 'application/json',
@@ -101,7 +134,8 @@ export default class ManageJob extends React.Component {
         console.log(res);
       }.bind(this),
       error: function (res) {
-        console.log(res.status);
+        //  console.log(res.status);
+        console.log(res);
       },
     });
     this.init();
@@ -130,6 +164,8 @@ export default class ManageJob extends React.Component {
   render() {
     //   const leftTags = this.props.data.map(x => this.buildNavElement(x))
     console.log(this.state.loadJobs);
+    console.log('testing new app load');
+
     var data = this.state.loadJobs;
     const itemsPerPage = 2;
     const { page } = this.state;
@@ -138,9 +174,11 @@ export default class ManageJob extends React.Component {
       (page - 1) * itemsPerPage,
       (page - 1) * itemsPerPage + itemsPerPage
     );
+    console.log('items ' + items);
+
     const paginateddata =
       items == null
-        ? []
+        ? null
         : items.map((x) => (
             <JobSummaryCard
               key={x.id}
@@ -149,19 +187,42 @@ export default class ManageJob extends React.Component {
               description={x.summary}
             />
           ));
+    console.log(paginateddata);
 
     return (
       <BodyWrapper loaderData={this.state.loaderData} reload={this.loadData}>
-        <section className="page-body">
+        <section>
           <div className="ui container">
             <div className="ui container">
               <div className="profile">
                 <Grid>
                   <Grid.Row>
-                    <h3>List of Jobs</h3>
+                    <h2>List of Jobs</h2>
                   </Grid.Row>
+                  <div>
+                    <Icon name="filter" />
+                    Filter:
+                    <Dropdown
+                      inline
+                      search
+                      defaultValue={this.state.filterOptions[0].value}
+                      options={this.state.filterOptions}
+                    />
+                    <Icon name="calendar alternate" />
+                    Sort by date:
+                    <Dropdown
+                      inline
+                      search
+                      defaultValue={this.state.sortOptions[0].value}
+                      options={this.state.sortOptions}
+                    />
+                  </div>
                   <Grid.Row>
-                    <JobsDisplay>{paginateddata}</JobsDisplay>
+                    {data === [] ? (
+                      'No jobs Found'
+                    ) : (
+                      <JobsDisplay>{paginateddata}</JobsDisplay>
+                    )}
                   </Grid.Row>
                   <Grid.Row centered>
                     <Pagination
